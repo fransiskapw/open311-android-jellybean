@@ -1,0 +1,15 @@
+<resources>
+
+    <string name="app_name">GeoReporter</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">GeoReporter</string>
+    <string name="tab_personal_info">Personal Info</string>
+    <string name="tab_servers">Servers</string>
+    <string name="button_accept_error">Oh Well</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="email">Email</string>
+    <string name="phone">Phone</string>
+    <string name="dialog_loading_services">Loading service information</string>
+
+</resources>
