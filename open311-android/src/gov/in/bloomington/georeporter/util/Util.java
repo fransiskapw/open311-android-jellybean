@@ -65,5 +65,6 @@ public class Util {
 					}
 			   });
 		builder.create();
+		builder.show();
 	}
 }

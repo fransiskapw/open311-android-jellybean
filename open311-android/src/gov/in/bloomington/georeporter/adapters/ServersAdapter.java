@@ -5,6 +5,9 @@
  */
 package gov.in.bloomington.georeporter.adapters;
 
+import gov.in.bloomington.georeporter.R;
+import gov.in.bloomington.georeporter.models.Preferences;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -13,15 +16,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 public class ServersAdapter extends BaseAdapter {
 	private JSONArray mServers;
 	private static LayoutInflater mInflater;
+	private String mCurrentServerName;
 	
 	public ServersAdapter(JSONArray d, Context c) {
 		mServers  = d;
 		mInflater = LayoutInflater.from(c);
+		mCurrentServerName = Preferences.getCurrentServer(c).optString("name");
 	}
 
 	@Override
@@ -41,6 +47,7 @@ public class ServersAdapter extends BaseAdapter {
 	
 	private static class ViewHolder {
 		public TextView name, url;
+		public RadioButton radio;
 	}
 
 	/* (non-Javadoc)
@@ -51,17 +58,27 @@ public class ServersAdapter extends BaseAdapter {
 		ViewHolder holder;
 		
 		if (convertView == null) {
-			convertView = mInflater.inflate(android.R.layout.simple_list_item_2, null);
+			convertView = mInflater.inflate(R.layout.list_item_servers, null);
 			holder = new ViewHolder();
 			holder.name = (TextView)convertView.findViewById(android.R.id.text1);
 			holder.url  = (TextView)convertView.findViewById(android.R.id.text2);
+			holder.radio = (RadioButton)convertView.findViewById(R.id.radio);
 			convertView.setTag(holder);
 		}
 		else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		holder.name.setText(mServers.optJSONObject(position).optString("name"));
-		holder.url .setText(mServers.optJSONObject(position).optString("url"));
+		
+		String name = mServers.optJSONObject(position).optString("name");
+		String url  = mServers.optJSONObject(position).optString("url");
+		if (name.equals(mCurrentServerName)) {
+			holder.radio.setChecked(true);
+		}
+		else {
+			holder.radio.setChecked(false);
+		}
+		holder.name.setText(name);
+		holder.url .setText(url);
 		return convertView;
 	}
 }
