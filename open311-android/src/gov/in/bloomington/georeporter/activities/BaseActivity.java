@@ -42,6 +42,11 @@ public abstract class BaseActivity extends SherlockActivity {
 	    		startActivity(intent);
 	    		return true;
 	    		
+	    	case R.id.menu_report:
+	    		intent = new Intent(this, ReportActivity.class);
+	    		startActivity(intent);
+	    		return true;
+	    		
 	    	default:
     			return super.onOptionsItemSelected(item);
     	}

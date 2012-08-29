@@ -33,8 +33,8 @@ public class Open311 {
 	private static String mApiKey;
 	
 	private static JSONArray  mServiceList = null;
-	private static ArrayList<String> mGroups;
 	private static HashMap<String, JSONObject> mServiceDefinitions;
+	public static ArrayList<String> sGroups;
 	
 	private static DefaultHttpClient mClient = null;
 	
@@ -64,7 +64,7 @@ public class Open311 {
 		mBaseUrl      = null;
 		mJurisdiction = null;
 		mApiKey       = null;
-		mGroups       = new ArrayList<String>();
+		sGroups       = new ArrayList<String>();
 		mServiceList  = null;
 		mServiceDefinitions = new HashMap<String, JSONObject>();
 		
@@ -86,7 +86,7 @@ public class Open311 {
 				JSONObject s = mServiceList.getJSONObject(i);
 				// Add groups to mGroups
 				group = s.optString("group");
-				if (group != "" && !mGroups.contains(group)) { mGroups.add(group); }
+				if (group != "" && !sGroups.contains(group)) { sGroups.add(group); }
 				
 				// Add Service Definitions to mServiceDefinitions
 				if (s.optString("metadata") == "true") {

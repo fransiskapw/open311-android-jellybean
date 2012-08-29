@@ -36,9 +36,6 @@ public class ServersFragment extends SherlockListFragment {
 		setListAdapter(new ServersAdapter(mServers, getActivity()));
 	}
 	
-	/* (non-Javadoc)
-	 * @see android.support.v4.app.ListFragment#onListItemClick(android.widget.ListView, android.view.View, int, long)
-	 */
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
