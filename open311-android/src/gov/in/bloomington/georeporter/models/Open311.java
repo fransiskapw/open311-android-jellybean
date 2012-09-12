@@ -5,10 +5,7 @@
  */
 package gov.in.bloomington.georeporter.models;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -16,6 +13,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -131,7 +129,7 @@ public class Open311 {
 		for (int i=0; i<len; i++) {
 			try {
 				JSONObject s = mServiceList.getJSONObject(i);
-				if (s.optString("group") == group) { services.add(s); }
+				if (s.optString("group").equals(group)) { services.add(s); }
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -175,17 +173,8 @@ public class Open311 {
 		if (mClient == null) {
 			mClient = new DefaultHttpClient();
 		}
-		HttpResponse r;
-		InputStream content;
-		String response = "";
-		r = mClient.execute(new HttpGet(url));
-		content = r.getEntity().getContent();
-		
-		BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-		String s = "";
-		while ((s = buffer.readLine()) != null) {
-			response += s;
-		}
+		HttpResponse r = mClient.execute(new HttpGet(url));
+		String response = EntityUtils.toString(r.getEntity());
 		
 		return response;
 	}

@@ -10,7 +10,6 @@ import org.json.JSONObject;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.view.Window;
 
 import gov.in.bloomington.georeporter.activities.BaseActivity;
 import gov.in.bloomington.georeporter.activities.SettingsActivity;
@@ -19,9 +18,6 @@ import gov.in.bloomington.georeporter.models.Preferences;
 import gov.in.bloomington.georeporter.util.Util;
 
 public class MainActivity extends BaseActivity {
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onResume()
-	 */
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -36,9 +32,6 @@ public class MainActivity extends BaseActivity {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see android.os.AsyncTask
-	 */
 	private class EndpointLoader extends AsyncTask<JSONObject, Void, Boolean> {
 		ProgressDialog dialog;
 		

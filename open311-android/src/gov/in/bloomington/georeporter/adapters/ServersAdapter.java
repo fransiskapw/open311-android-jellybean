@@ -27,7 +27,9 @@ public class ServersAdapter extends BaseAdapter {
 	public ServersAdapter(JSONArray d, Context c) {
 		mServers  = d;
 		mInflater = LayoutInflater.from(c);
-		mCurrentServerName = Preferences.getCurrentServer(c).optString("name");
+		
+		JSONObject currentServer = Preferences.getCurrentServer(c);
+		mCurrentServerName = currentServer==null ? "" : currentServer.optString("name");
 	}
 
 	@Override
