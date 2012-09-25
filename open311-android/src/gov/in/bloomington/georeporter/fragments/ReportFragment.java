@@ -9,13 +9,11 @@ import java.util.ArrayList;
 
 import gov.in.bloomington.georeporter.MainActivity;
 import gov.in.bloomington.georeporter.R;
-import gov.in.bloomington.georeporter.activities.ChooseLocationActivity;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -27,8 +25,6 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
 
 public class ReportFragment extends SherlockFragment {
-	public static final int CHOOSE_LOCATION_REQUEST = 1;
-	
 	private JSONObject mService;
 	private ArrayList<NameValuePair> mPost;
 	
@@ -67,27 +63,5 @@ public class ReportFragment extends SherlockFragment {
 		
 		mPost = new ArrayList<NameValuePair>();
 		mPost.add(new BasicNameValuePair("service_code", mService.optString("service_code")));
-	}
-	
-	/**
-	 * OnClick handler for the Location
-	 * 
-	 * @param view
-	 * void
-	 */
-	public void openMapChooser(View view) {
-		Intent i = new Intent(getActivity(), ChooseLocationActivity.class);
-		startActivityForResult(i, CHOOSE_LOCATION_REQUEST);
-	}
-	
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		
-		if (requestCode == CHOOSE_LOCATION_REQUEST) {
-			if (resultCode == Activity.RESULT_OK) {
-				
-			}
-		}
 	}
 }

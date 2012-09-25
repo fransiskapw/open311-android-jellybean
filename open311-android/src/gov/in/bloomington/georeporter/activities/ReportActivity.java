@@ -17,9 +17,13 @@ import gov.in.bloomington.georeporter.models.Open311;
 
 import com.actionbarsherlock.app.ActionBar;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 public class ReportActivity extends BaseFragmentActivity implements OnGroupSelectedListener, OnServiceSelectedListener {
+	public static final int CHOOSE_LOCATION_REQUEST = 1;
 	private ActionBar mActionBar;
 	
 	@Override
@@ -56,6 +60,32 @@ public class ReportActivity extends BaseFragmentActivity implements OnGroupSelec
 									.replace(android.R.id.content, report)
 									.addToBackStack(null)
 									.commit();
+	}
+	/**
+	 * OnClick handler for the Location text view in ReportFragment
+	 * 
+	 * @param view
+	 * void
+	 */
+	public void openMapChooser(View view) {
+		Intent i = new Intent(this, ChooseLocationActivity.class);
+		startActivityForResult(i, CHOOSE_LOCATION_REQUEST);
+	}
+	
+	/**
+	 * Callback from ChooseLocationActivity
+	 * 
+	 * Intent data should have latitude and longitude
+	 */
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		if (requestCode == CHOOSE_LOCATION_REQUEST) {
+			if (resultCode == Activity.RESULT_OK) {
+				
+			}
+		}
 	}
 	
 }

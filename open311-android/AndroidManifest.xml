@@ -25,6 +25,7 @@
         </activity>
         <activity android:name=".activities.SettingsActivity"></activity>
         <activity android:name=".activities.ReportActivity"></activity>
+        <activity android:name=".activities.ChooseLocationActivity"></activity>
     </application>
 
 </manifest>
