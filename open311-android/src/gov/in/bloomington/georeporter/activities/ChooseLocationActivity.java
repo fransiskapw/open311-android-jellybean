@@ -11,7 +11,6 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
 import android.view.View;
 
@@ -23,11 +22,14 @@ public class ChooseLocationActivity extends MapActivity {
 	private MapView mMap;
 	private LocationManager mLocationManager;
 	
+	public static final int DEFAULT_ZOOM = 17;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map_chooser);
 		mMap = (MapView)findViewById(R.id.mapview);
+		mMap.getController().setZoom(DEFAULT_ZOOM);
 	}
 	
 	@Override
@@ -49,6 +51,8 @@ public class ChooseLocationActivity extends MapActivity {
 	private class MapListener implements LocationListener {
 		@Override
 		public void onLocationChanged(Location location) {
+			mLocationManager.removeUpdates(this);
+			
 			GeoPoint p = new GeoPoint(
 				(int)(location.getLatitude()  * 1e6),
 				(int)(location.getLongitude() * 1e6)
@@ -99,6 +103,4 @@ public class ChooseLocationActivity extends MapActivity {
 		setResult(RESULT_CANCELED);
 		finish();
 	}
-	
-
 }
