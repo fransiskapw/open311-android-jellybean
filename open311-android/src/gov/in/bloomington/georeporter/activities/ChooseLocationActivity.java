@@ -6,6 +6,7 @@
 package gov.in.bloomington.georeporter.activities;
 
 import gov.in.bloomington.georeporter.R;
+import gov.in.bloomington.georeporter.models.Open311;
 import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
@@ -88,8 +89,8 @@ public class ChooseLocationActivity extends MapActivity {
 		GeoPoint center = mMap.getMapCenter();
 		
 		Intent result = new Intent();
-		result.putExtra("latitude",  center.getLatitudeE6());
-		result.putExtra("longitude", center.getLongitudeE6());
+		result.putExtra(Open311.LATITUDE,  center.getLatitudeE6());
+		result.putExtra(Open311.LONGITUDE, center.getLongitudeE6());
 		setResult(RESULT_OK, result);
 		finish();
 	}

@@ -6,25 +6,50 @@
 package gov.in.bloomington.georeporter.models;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
+import org.apache.http.NameValuePair;
+import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Open311 {
-	private static Open311 mInstance;
-	
-	public static final String URL          = "url";
+	/**
+	 * Constants for Open311 keys
+	 * 
+	 * I'm tired of making typos in key names
+	 */
 	public static final String JURISDICTION = "jurisdiction_id";
 	public static final String API_KEY      = "api_key";
 	public static final String SERVICE_CODE = "service_code";
+	public static final String DESCRIPTION  = "description";
+	public static final String LATITUDE     = "lat";
+	public static final String LONGITUDE    = "long";
+	public static final String ADDRESS      = "address_string";
+	public static final String EMAIL        = "email";
+	public static final String DEVICE_ID    = "devide_id";
+	public static final String FIRST_NAME   = "first_name";
+	public static final String LAST_NAME    = "last_name";
+	public static final String PHONE        = "phone";
+	public static final String MEDIA        = "media";
+	public static final String MEDIA_URL    = "media_url";
+	public static final String URL          = "url";
+	
+	private static Open311 mInstance;
 	
 	private static String mBaseUrl;
 	private static String mJurisdiction;
@@ -35,6 +60,7 @@ public class Open311 {
 	public static ArrayList<String> sGroups;
 	
 	private static DefaultHttpClient mClient = null;
+	private static final int TIMEOUT = 3000;
 	
 	private Open311() {}
 	public static synchronized Open311 getInstance() {
@@ -42,6 +68,23 @@ public class Open311 {
 			mInstance = new Open311();
 		}
 		return mInstance;
+	}
+	
+	/**
+	 * Lazy load an Http client
+	 * 
+	 * @return
+	 * DefaultHttpClient
+	 */
+	private static DefaultHttpClient getClient() {
+		if (mClient == null) {
+			mClient = new DefaultHttpClient();
+			mClient.getParams().setParameter(CoreProtocolPNames  .HTTP_CONTENT_CHARSET, "UTF-8");
+			mClient.getParams().setParameter(CoreProtocolPNames  .PROTOCOL_VERSION,     HttpVersion.HTTP_1_1);
+			mClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT,           TIMEOUT);
+			mClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT,   TIMEOUT);
+		}
+		return mClient;
 	}
 	
 	/**
@@ -163,6 +206,39 @@ public class Open311 {
 	}
 	
 	/**
+	 * POST new service request data to the endpoint
+	 * 
+	 * @param data
+	 * @return
+	 * JSONObject
+	 */
+	public static JSONArray postServiceRequest(List<NameValuePair> data) {
+		HttpPost post = new HttpPost(mBaseUrl + "/requests.json");
+		JSONArray response = new JSONArray();
+		try {
+			post.setEntity(new UrlEncodedFormEntity(data));
+			HttpResponse r = mClient.execute(post);
+			response = new JSONArray(EntityUtils.toString(r.getEntity()));
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return response;
+	}
+	
+	/**
 	 * Returns the response content from an HTTP request
 	 * 
 	 * @param url
@@ -170,10 +246,7 @@ public class Open311 {
 	 * String
 	 */
 	private static String loadStringFromUrl(String url) throws ClientProtocolException, IOException, IllegalStateException {
-		if (mClient == null) {
-			mClient = new DefaultHttpClient();
-		}
-		HttpResponse r = mClient.execute(new HttpGet(url));
+		HttpResponse r = getClient().execute(new HttpGet(url));
 		String response = EntityUtils.toString(r.getEntity());
 		
 		return response;

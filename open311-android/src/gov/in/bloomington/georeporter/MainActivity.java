@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 
 import gov.in.bloomington.georeporter.activities.BaseActivity;
 import gov.in.bloomington.georeporter.activities.SettingsActivity;
@@ -18,6 +19,12 @@ import gov.in.bloomington.georeporter.models.Preferences;
 import gov.in.bloomington.georeporter.util.Util;
 
 public class MainActivity extends BaseActivity {
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+	}
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
