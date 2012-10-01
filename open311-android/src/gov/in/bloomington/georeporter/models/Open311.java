@@ -33,23 +33,47 @@ public class Open311 {
 	 * 
 	 * I'm tired of making typos in key names
 	 */
+	// Global required fields
 	public static final String JURISDICTION = "jurisdiction_id";
 	public static final String API_KEY      = "api_key";
 	public static final String SERVICE_CODE = "service_code";
-	public static final String DESCRIPTION  = "description";
+	// Global basic fields
+	public static final String MEDIA        = "media";
+	public static final String MEDIA_URL    = "media_url";
 	public static final String LATITUDE     = "lat";
 	public static final String LONGITUDE    = "long";
 	public static final String ADDRESS      = "address_string";
+	public static final String DESCRIPTION  = "description";
+	// Personal Information fields
 	public static final String EMAIL        = "email";
 	public static final String DEVICE_ID    = "devide_id";
 	public static final String FIRST_NAME   = "first_name";
 	public static final String LAST_NAME    = "last_name";
 	public static final String PHONE        = "phone";
-	public static final String MEDIA        = "media";
-	public static final String MEDIA_URL    = "media_url";
-	public static final String URL          = "url";
+	// Custom field definition in service_definition
+	public static final String METADATA     = "metadata";
+	public static final String ATTRIBUTES   = "attributes";
+	public static final String VARIABLE     = "variable";
+	public static final String CODE         = "code";
+	public static final String ORDER        = "order";
+	public static final String VALUES       = "values";
+	public static final String KEY          = "key";
+	public static final String NAME         = "name";
+	public static final String REQUIRED     = "required";
+	public static final String DATATYPE     = "datatype";
+	public static final String STRING       = "string";
+	public static final String NUMBER       = "number";
+	public static final String DATETIME     = "datetime";
+	public static final String TEXT         = "text";
+	public static final String SINGLEVALUELIST = "singlevaluelist";
+	public static final String MULTIVALUELIST  = "multivaluelist";
+	// Additional key names from /res/raw/available_servers.json
+	public static final String URL            = "url";
+	public static final String SUPPORTS_MEDIA = "supports_media";
 	
 	private static Open311 mInstance;
+	public static Boolean ready = false;
+	
 	
 	private static String mBaseUrl;
 	private static String mJurisdiction;
@@ -102,6 +126,7 @@ public class Open311 {
 	 * Boolean
 	 */
 	public static Boolean setEndpoint(JSONObject current_server) {
+		ready         = false;
 		mBaseUrl      = null;
 		mJurisdiction = null;
 		mApiKey       = null;
@@ -155,7 +180,8 @@ public class Open311 {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
+		ready = true;
+		return ready;
 	}
 	
 	

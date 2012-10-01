@@ -35,9 +35,6 @@ public class PersonalInfoFragment extends SherlockListFragment {
 		setListAdapter(new PersonalInfoAdapter(mPersonalInfo, getActivity()));
 	}
 	
-	/* (non-Javadoc)
-	 * @see android.support.v4.app.Fragment#onPause()
-	 */
 	@Override
 	public void onPause() {
 		Preferences.setPersonalInfo(mPersonalInfo, getActivity());
@@ -45,9 +42,6 @@ public class PersonalInfoFragment extends SherlockListFragment {
 		super.onPause();
 	}
 	
-	/* (non-Javadoc)
-	 * @see android.support.v4.app.ListFragment#onListItemClick(android.widget.ListView, android.view.View, int, long)
-	 */
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
