@@ -75,4 +75,14 @@
         android:onClick="openMapChooser"
         android:src="@android:drawable/ic_menu_mylocation" />
 
+    <LinearLayout
+        android:id="@+id/attributes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/description"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical" >
+
+    </LinearLayout>
+
 </RelativeLayout>

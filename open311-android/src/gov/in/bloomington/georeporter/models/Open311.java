@@ -71,21 +71,20 @@ public class Open311 {
 	public static final String URL            = "url";
 	public static final String SUPPORTS_MEDIA = "supports_media";
 	
-	private static Open311 mInstance;
-	public static Boolean ready = false;
+	public static Boolean                     sReady = false;
+	public static JSONArray                   sServiceList = null;
+	public static HashMap<String, JSONObject> sServiceDefinitions;
+	public static ArrayList<String>           sGroups;
 	
 	
 	private static String mBaseUrl;
 	private static String mJurisdiction;
 	private static String mApiKey;
 	
-	private static JSONArray  mServiceList = null;
-	private static HashMap<String, JSONObject> mServiceDefinitions;
-	public static ArrayList<String> sGroups;
-	
 	private static DefaultHttpClient mClient = null;
 	private static final int TIMEOUT = 3000;
 	
+	private static Open311 mInstance;
 	private Open311() {}
 	public static synchronized Open311 getInstance() {
 		if (mInstance == null) {
@@ -126,13 +125,13 @@ public class Open311 {
 	 * Boolean
 	 */
 	public static Boolean setEndpoint(JSONObject current_server) {
-		ready         = false;
+		sReady         = false;
 		mBaseUrl      = null;
 		mJurisdiction = null;
 		mApiKey       = null;
 		sGroups       = new ArrayList<String>();
-		mServiceList  = null;
-		mServiceDefinitions = new HashMap<String, JSONObject>();
+		sServiceList  = null;
+		sServiceDefinitions = new HashMap<String, JSONObject>();
 		
 		try {
 			mBaseUrl      = current_server.getString(URL);
@@ -142,24 +141,24 @@ public class Open311 {
 			return false;
 		}
 		try {
-			mServiceList = new JSONArray(loadStringFromUrl(getServiceListUrl()));
+			sServiceList = new JSONArray(loadStringFromUrl(getServiceListUrl()));
 			
 			// Go through all the services and pull out the seperate groups
 			// Also, while we're running through, load any service_definitions
 			String group = "";
-			int len = mServiceList.length();
+			int len = sServiceList.length();
 			for (int i=0; i<len; i++) {
-				JSONObject s = mServiceList.getJSONObject(i);
+				JSONObject s = sServiceList.getJSONObject(i);
 				// Add groups to mGroups
 				group = s.optString("group");
 				if (group != "" && !sGroups.contains(group)) { sGroups.add(group); }
 				
 				// Add Service Definitions to mServiceDefinitions
 				if (s.optString("metadata") == "true") {
-					String service_code = s.optString(SERVICE_CODE);
-					JSONObject service_definition = getServiceDefinition(service_code);
-					if (service_definition != null) {
-						mServiceDefinitions.put(service_code, service_definition);
+					String code = s.optString(SERVICE_CODE);
+					JSONObject definition = getServiceDefinition(code);
+					if (definition != null) {
+						sServiceDefinitions.put(code, definition);
 					}
 				}
 			}
@@ -180,8 +179,8 @@ public class Open311 {
 			e.printStackTrace();
 			return false;
 		}
-		ready = true;
-		return ready;
+		sReady = true;
+		return sReady;
 	}
 	
 	
@@ -194,10 +193,10 @@ public class Open311 {
 	 */
 	public static ArrayList<JSONObject> getServices(String group) {
 		ArrayList<JSONObject> services = new ArrayList<JSONObject>();
-		int len = mServiceList.length();
+		int len = sServiceList.length();
 		for (int i=0; i<len; i++) {
 			try {
-				JSONObject s = mServiceList.getJSONObject(i);
+				JSONObject s = sServiceList.getJSONObject(i);
 				if (s.optString("group").equals(group)) { services.add(s); }
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

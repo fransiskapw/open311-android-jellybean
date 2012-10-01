@@ -72,6 +72,8 @@ public class ReportActivity extends BaseFragmentActivity implements OnGroupSelec
 	public void onServiceSelected(JSONObject service) {
 		mActionBar.setTitle(service.optString("service_name"));
 		
+		report.add(new BasicNameValuePair(Open311.SERVICE_CODE, service.optString(Open311.SERVICE_CODE)));
+		
 		mReportFragment = new ReportFragment();
 		mReportFragment.setService(service);
 		getSupportFragmentManager() .beginTransaction()
@@ -146,6 +148,8 @@ public class ReportActivity extends BaseFragmentActivity implements OnGroupSelec
 	/**
 	 * Callback from fragment_report layout
 	 * 
+	 * Sends the user back to the Home screen
+	 * 
 	 * @param v
 	 * void
 	 */
@@ -179,6 +183,7 @@ public class ReportActivity extends BaseFragmentActivity implements OnGroupSelec
 	        try {
 	            addresses = geocoder.getFromLocation(latitude, longitude, 1);
 	        } catch (IOException e) {
+				// TODO Auto-generated catch block
 	            e.printStackTrace();
 	        }
 	        
