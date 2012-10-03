@@ -3,11 +3,5 @@
 		"supports_media": TRUE,
 		"jurisdiction_id":"bloomington.in.gov",
 		"api_key":"4f675c8fb1fe2c202a000000"
-	},
-	{	"name":"Server Name",
-		"url":"https://somewhere.org/open311/v2",
-		"supports_media": TRUE,
-		"jurisdiction_id":"",
-		"api_key":""
 	}
 ]

@@ -5,8 +5,8 @@
  */
 package gov.in.bloomington.georeporter.fragments;
 
-import gov.in.bloomington.georeporter.MainActivity;
 import gov.in.bloomington.georeporter.R;
+import gov.in.bloomington.georeporter.activities.MainActivity;
 import gov.in.bloomington.georeporter.adapters.ServersAdapter;
 import gov.in.bloomington.georeporter.models.Preferences;
 import gov.in.bloomington.georeporter.util.Util;

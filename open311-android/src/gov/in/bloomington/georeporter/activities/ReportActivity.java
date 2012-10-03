@@ -14,7 +14,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
-import gov.in.bloomington.georeporter.MainActivity;
 import gov.in.bloomington.georeporter.R;
 import gov.in.bloomington.georeporter.fragments.ChooseGroupFragment;
 import gov.in.bloomington.georeporter.fragments.ChooseServiceFragment;
@@ -36,7 +35,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-public class ReportActivity extends BaseFragmentActivity implements OnGroupSelectedListener, OnServiceSelectedListener {
+public class ReportActivity extends BaseFragmentActivity
+							implements OnGroupSelectedListener,
+									   OnServiceSelectedListener {
+	
 	public static final int CHOOSE_LOCATION_REQUEST = 1;
 	private ActionBar mActionBar;
 	private List<NameValuePair> report;
@@ -81,6 +83,7 @@ public class ReportActivity extends BaseFragmentActivity implements OnGroupSelec
 									.addToBackStack(null)
 									.commit();
 	}
+	
 	/**
 	 * OnClick handler for the Location text view in ReportFragment
 	 * 
@@ -121,45 +124,6 @@ public class ReportActivity extends BaseFragmentActivity implements OnGroupSelec
 	}
 	
 	/**
-	 * Updates the location text displayed in fragment_report layout
-	 * 
-	 * @param s
-	 * void
-	 */
-	private void updateLocationText(String s) {
-        TextView v = (TextView)mReportFragment.getView().findViewById(R.id.address_string);
-        v.setText(s);
-	}
-	
-	/**
-	 * Callback from fragment_report layout
-	 * 
-	 * Reads in all the values from the ReportFragment view
-	 * POST the report to the server
-	 * Sends the user to the saved report screen
-	 * 
-	 * @param v
-	 * void
-	 */
-	public void submit(View v) {
-		
-	}
-
-	/**
-	 * Callback from fragment_report layout
-	 * 
-	 * Sends the user back to the Home screen
-	 * 
-	 * @param v
-	 * void
-	 */
-	public void cancel(View v) {
-		Intent intent = new Intent(this, MainActivity.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		startActivity(intent);
-	}
-
-	/**
 	 * AsyncTask encapsulating the reverse-geocoding API.
 	 * 
 	 * Updates the view once it has an address
@@ -193,4 +157,45 @@ public class ReportActivity extends BaseFragmentActivity implements OnGroupSelec
 	        }
 	        return null;
 	    }
-	}}
+	}
+	
+	/**
+	 * Updates the location text displayed in fragment_report layout
+	 * 
+	 * @param s
+	 * void
+	 */
+	private void updateLocationText(String s) {
+        TextView v = (TextView)mReportFragment.getView().findViewById(R.id.address_string);
+        v.setText(s);
+	}
+	
+	
+	/**
+	 * Callback from fragment_report layout
+	 * 
+	 * Reads in all the values from the ReportFragment view
+	 * POST the report to the server
+	 * Sends the user to the saved report screen
+	 * 
+	 * @param v
+	 * void
+	 */
+	public void submit(View v) {
+		
+	}
+
+	/**
+	 * Callback from fragment_report layout
+	 * 
+	 * Sends the user back to the Home screen
+	 * 
+	 * @param v
+	 * void
+	 */
+	public void cancel(View v) {
+		Intent intent = new Intent(this, MainActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		startActivity(intent);
+	}
+}

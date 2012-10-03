@@ -3,7 +3,7 @@
  * @license http://www.gnu.org/licenses/gpl.txt GNU/GPL, see LICENSE.txt
  * @author Cliff Ingham <inghamn@bloomington.in.gov>
  */
-package gov.in.bloomington.georeporter;
+package gov.in.bloomington.georeporter.activities;
 
 import org.json.JSONObject;
 
@@ -12,8 +12,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import gov.in.bloomington.georeporter.activities.BaseActivity;
-import gov.in.bloomington.georeporter.activities.SettingsActivity;
+import gov.in.bloomington.georeporter.R;
 import gov.in.bloomington.georeporter.models.Open311;
 import gov.in.bloomington.georeporter.models.Preferences;
 import gov.in.bloomington.georeporter.util.Util;

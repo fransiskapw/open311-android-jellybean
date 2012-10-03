@@ -5,7 +5,6 @@
  */
 package gov.in.bloomington.georeporter.activities;
 
-import gov.in.bloomington.georeporter.MainActivity;
 import gov.in.bloomington.georeporter.R;
 import android.content.Intent;
 import android.os.Bundle;
