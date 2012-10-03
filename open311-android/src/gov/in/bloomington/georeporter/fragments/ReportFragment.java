@@ -5,21 +5,26 @@
  */
 package gov.in.bloomington.georeporter.fragments;
 
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.List;
 
 import gov.in.bloomington.georeporter.R;
+import gov.in.bloomington.georeporter.activities.ChooseLocationActivity;
+import gov.in.bloomington.georeporter.activities.MainActivity;
+import gov.in.bloomington.georeporter.dialogs.DatePickerDialogFragment;
 import gov.in.bloomington.georeporter.models.Open311;
+import gov.in.bloomington.georeporter.tasks.ReverseGeocodingTask;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,9 +38,16 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.actionbarsherlock.app.SherlockFragment;
+import com.google.android.maps.GeoPoint;
 
 public class ReportFragment extends SherlockFragment {
-	private JSONObject mService;
+	public static final int CHOOSE_LOCATION_REQUEST = 1;
+	
+	private JSONObject          mService;
+	private List<NameValuePair> mReport;
+	
+	private EditText mLocationView;
+	
 	/**
 	 * Initialize the report with a service
 	 * 
@@ -48,21 +60,55 @@ public class ReportFragment extends SherlockFragment {
 	 */
 	public void setService(JSONObject service) {
 		mService = service;
+		mReport  = new ArrayList<NameValuePair>();
+		mReport.add(new BasicNameValuePair(Open311.SERVICE_CODE, service.optString(Open311.SERVICE_CODE)));
 	}
 	
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putString("service", mService.toString());
+	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		if (savedInstanceState != null) {
 			try {
-				mService = new JSONObject(savedInstanceState.getString("service"));
+				JSONObject s = new JSONObject(savedInstanceState.getString("service"));
+				setService(s);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
-		return getLayoutInflater(savedInstanceState).inflate(R.layout.fragment_report, container, false);
+		
+		View v = getLayoutInflater(savedInstanceState).inflate(R.layout.fragment_report, container, false);
+		mLocationView = (EditText) v.findViewById(R.id.address_string);
+		
+		// Register onClick handlers for all the clickables in the layout
+		v.findViewById(R.id.mapChooserButton).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(getActivity(), ChooseLocationActivity.class);
+				startActivityForResult(i, CHOOSE_LOCATION_REQUEST);
+			}
+		});
+		v.findViewById(R.id.button_cancel).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getActivity(), MainActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
+			}
+		});
+		v.findViewById(R.id.button_submit).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				submit(v);
+			}
+		});
+		return v;
 	}
 	
 	@Override
@@ -94,10 +140,32 @@ public class ReportFragment extends SherlockFragment {
 		}
 	}
 	
+	/**
+	 * Callback from ChooseLocationActivity
+	 * 
+	 * Intent data should have latitude and longitude
+	 */
 	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putString("service", mService.toString());
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		if (requestCode == CHOOSE_LOCATION_REQUEST) {
+			if (resultCode == Activity.RESULT_OK) {
+				int latitudeE6  = data.getIntExtra(Open311.LATITUDE,  0);
+				int longitudeE6 = data.getIntExtra(Open311.LONGITUDE, 0);
+				
+				String latitude  = Double.toString(latitudeE6  / 1e6);
+				String longitude = Double.toString(longitudeE6 / 1e6);
+				// Display the lat/long as text for now
+				// It will get replaced with the address when ReverseGeoCodingTask returns
+				mLocationView.setText(String.format("%s, %s", latitude, longitude));
+				
+				mReport.add(new BasicNameValuePair(Open311.LATITUDE,  latitude));
+				mReport.add(new BasicNameValuePair(Open311.LONGITUDE, longitude));
+				
+				new ReverseGeocodingTask(getActivity(), mLocationView).execute(new GeoPoint(latitudeE6, longitudeE6));
+			}
+		}
 	}
 	
 	/**
@@ -130,7 +198,7 @@ public class ReportFragment extends SherlockFragment {
 			input.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					SherlockDialogFragment picker = new DatePicker(v);
+					SherlockDialogFragment picker = new DatePickerDialogFragment(v);
 					picker.show(getActivity().getSupportFragmentManager(), "datePicker");
 				}
 			});
@@ -165,25 +233,16 @@ public class ReportFragment extends SherlockFragment {
 		}
 		return null;
 	}
-	
-	private class DatePicker extends SherlockDialogFragment implements OnDateSetListener {
-		private TextView mInput;
-		
-		public DatePicker(View v) {
-			mInput = (TextView) v;
-		}
-		
-		@Override
-		public Dialog onCreateDialog(Bundle savedInstanceState) {
-			Calendar c = Calendar.getInstance();
-			return new DatePickerDialog(getActivity(), this, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
-		}
 
-		@Override
-		public void onDateSet(android.widget.DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-			Calendar c = Calendar.getInstance();
-			c.set(year, monthOfYear, dayOfMonth);
-			mInput.setText(DateFormat.getDateFormat(getActivity()).format(c.getTime()));
-		}
+	/**
+	 * Reads in all the values from the ReportFragment view
+	 * POST the report to the server
+	 * Sends the user to the saved report screen
+	 * 
+	 * @param v
+	 * void
+	 */
+	public void submit(View v) {
+		
 	}
 }

@@ -17,7 +17,6 @@
 	            android:layout_width="0dp"
 	            android:layout_height="wrap_content"
 	            android:layout_weight="1"
-	            android:onClick="submit"
 	            android:text="@string/submit" />
 	
 	        <Button
@@ -25,7 +24,6 @@
 	            android:layout_width="0dp"
 	            android:layout_height="wrap_content"
 	            android:layout_weight="1"
-	            android:onClick="cancel"
 	            android:text="@string/cancel" />
 	    </LinearLayout>
 	
@@ -74,7 +72,6 @@
 	        android:layout_height="wrap_content"
 	        android:layout_alignParentRight="true"
 	        android:layout_below="@+id/media_button"
-	        android:onClick="openMapChooser"
 	        android:src="@android:drawable/ic_menu_mylocation" />
 	
 	    <LinearLayout
